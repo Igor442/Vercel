@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Online com Stripe</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <header>
+        <h1>Loja Online</h1>
+    </header>
+
+    <section id="products">
+        <!-- Os produtos serão carregados aqui dinamicamente -->
+    </section>
+
+    <script>
+        async function loadProducts() {
+            const response = await fetch('/api/products');
+            const products = await response.json();
+            const productsSection = document.getElementById('products');
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product';
+
+                productCard.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <p>${product.description}</p>
+                    <p><strong>Preço: R$ ${(product.price / 100).toFixed(2)}</strong></p>
+                    <button onclick="checkout('${product.id}')">Comprar</button>
+                `;
+
+                productsSection.appendChild(productCard);
+            });
+        }
+
+        async function checkout(productId) {
+            const stripe = Stripe('SUA_PUBLIC_KEY_STRIPE');
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId })
+            });
+            const { sessionId } = await response.json();
+            await stripe.redirectToCheckout({ sessionId });
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>
