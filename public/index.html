@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loja com Stripe</title>
+  <title>Loja com Stripe - Produtos</title>
   <style>
     .product {
       border: 1px solid #ccc;
@@ -14,10 +14,18 @@
     .product h2 {
       margin: 0;
     }
+    .cart-link {
+      display: block;
+      margin: 20px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
   <h1>Produtos</h1>
+  <div class="cart-link">
+    <a href="cart.html">Ver Carrinho</a>
+  </div>
   <div id="products"></div>
 
   <script>
@@ -37,7 +45,7 @@
             <h2>${product.name}</h2>
             <p>${product.description ? product.description : 'Sem descrição'}</p>
             <p><strong>Preço: ${priceFormatted}</strong></p>
-            <button onclick="checkout('${product.id}')">Comprar</button>
+            <button onclick="addToCart('${product.id}', '${product.name}', ${product.price})">Adicionar ao Carrinho</button>
           `;
 
           productsSection.appendChild(productCard);
@@ -49,10 +57,22 @@
 
     loadProducts();
 
-    function checkout(productId) {
-      // Aqui você pode implementar o redirecionamento para o checkout com o produto específico.
-      console.log('Iniciar checkout para o produto:', productId);
+    function addToCart(id, name, price) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const product = { id, name, price };
+
+      // Verifica se o produto já está no carrinho
+      const existingProduct = cart.find(item => item.id === id);
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        product.quantity = 1;
+        cart.push(product);
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(`${name} foi adicionado ao carrinho`);
     }
-  <script src="https://js.stripe.com/v3/"></script>
+  </script>
 </body>
 </html>
