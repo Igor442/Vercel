@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="notification" id="notification"></div>
+
   <h1>Produtos</h1>
   <div class="cart-link">
     <a href="cart.html">Ver Carrinho</a>
@@ -55,7 +57,19 @@
       }
 
       localStorage.setItem('cart', JSON.stringify(cart));
-      alert(`${name} foi adicionado ao carrinho`);
+      
+      // Exibir notificação sofisticada
+      showNotification(`${name} foi adicionado ao seu carrinho!`);
+    }
+
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.classList.add('show');
+
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
     }
   </script>
 </body>
