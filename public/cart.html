@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seu Carrinho</title>
+  <style>
+    .product {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin: 10px;
+      text-align: center;
+    }
+    .total {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Carrinho</h1>
+  <div id="cart"></div>
+  <div class="total" id="total"></div>
+  <button onclick="checkout()">Finalizar Compra</button>
 
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartSection = document.getElementById('cart');
+      const totalElement = document.getElementById('total');
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartSection.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        return;
+      }
+
+      cart.forEach(product => {
+        const priceFormatted = (product.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const productElement = document.createElement('div');
+        productElement.className = 'product';
+
+        productElement.innerHTML = `
+          <h2>${product.name}</h2>
+          <p>Quantidade: ${product.quantity}</p>
+          <p><strong>Preço unitário: ${priceFormatted}</strong></p>
+        `;
+
+        cartSection.appendChild(productElement);
+        total += product.price * product.quantity;
+      });
+
+      totalElement.textContent = `Total: ${(total / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+    }
+
+    function checkout() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      if (cart.length === 0) {
+        alert('Seu carrinho está vazio.');
+        return;
+      }
+
+      // Aqui você pode redirecionar o usuário para o fluxo de checkout (Stripe, por exemplo).
+      alert('Iniciando processo de checkout');
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
