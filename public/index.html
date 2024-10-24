@@ -4,29 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loja com Stripe - Produtos</title>
-  <style>
-    .product {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin: 10px;
-      text-align: center;
-    }
-    .product h2 {
-      margin: 0;
-    }
-    .cart-link {
-      display: block;
-      margin: 20px;
-      text-align: right;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Produtos</h1>
   <div class="cart-link">
     <a href="cart.html">Ver Carrinho</a>
   </div>
-  <div id="products"></div>
+  <div id="products" class="container"></div>
 
   <script>
     async function loadProducts() {
@@ -61,7 +46,6 @@
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
       const product = { id, name, price };
 
-      // Verifica se o produto já está no carrinho
       const existingProduct = cart.find(item => item.id === id);
       if (existingProduct) {
         existingProduct.quantity += 1;
