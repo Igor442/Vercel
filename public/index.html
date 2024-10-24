@@ -1,56 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Online com Stripe</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="https://js.stripe.com/v3/"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loja com Stripe</title>
+  <style>
+    .product {
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin: 10px;
+      text-align: center;
+    }
+    .product h2 {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Loja Online</h1>
-    </header>
+  <h1>Produtos</h1>
+  <div id="products"></div>
 
-    <section id="products">
-        <!-- Os produtos serão carregados aqui dinamicamente -->
-    </section>
+  <script>
+    async function loadProducts() {
+      try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        const productsSection = document.getElementById('products');
 
-    <script>
-        async function loadProducts() {
-            const response = await fetch('/api/products');
-            const products = await response.json();
-            const productsSection = document.getElementById('products');
+        products.forEach(product => {
+          const productCard = document.createElement('div');
+          productCard.className = 'product';
 
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product';
+          const priceFormatted = (product.price / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-                productCard.innerHTML = `
-                    <h2>${product.name}</h2>
-                    <p>${product.description}</p>
-                    <p><strong>Preço: R$ ${(product.price / 100).toFixed(2)}</strong></p>
-                    <button onclick="checkout('${product.id}')">Comprar</button>
-                `;
+          productCard.innerHTML = `
+            <h2>${product.name}</h2>
+            <p>${product.description ? product.description : 'Sem descrição'}</p>
+            <p><strong>Preço: ${priceFormatted}</strong></p>
+            <button onclick="checkout('${product.id}')">Comprar</button>
+          `;
 
-                productsSection.appendChild(productCard);
-            });
-        }
+          productsSection.appendChild(productCard);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar produtos: ", error);
+      }
+    }
 
-        async function checkout(productId) {
-            const stripe = Stripe('SUA_PUBLIC_KEY_STRIPE');
-            const response = await fetch('/api/checkout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ productId })
-            });
-            const { sessionId } = await response.json();
-            await stripe.redirectToCheckout({ sessionId });
-        }
+    loadProducts();
 
-        loadProducts();
-    </script>
+    function checkout(productId) {
+      // Aqui você pode implementar o redirecionamento para o checkout com o produto específico.
+      console.log('Iniciar checkout para o produto:', productId);
+    }
+  </script>
 </body>
 </html>
