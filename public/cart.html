@@ -4,22 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seu Carrinho</title>
-  <style>
-    .product {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin: 10px;
-      text-align: center;
-    }
-    .total {
-      font-size: 18px;
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Carrinho</h1>
-  <div id="cart"></div>
+  <div id="cart" class="container"></div>
   <div class="total" id="total"></div>
   <button onclick="checkout()">Finalizar Compra</button>
 
@@ -31,7 +20,7 @@
       let total = 0;
 
       if (cart.length === 0) {
-        cartSection.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        cartSection.innerHTML = '<p class="empty-cart">Seu carrinho está vazio.</p>';
         return;
       }
 
@@ -60,7 +49,6 @@
         return;
       }
 
-      // Aqui você pode redirecionar o usuário para o fluxo de checkout (Stripe, por exemplo).
       alert('Iniciando processo de checkout');
     }
 
